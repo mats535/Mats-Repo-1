@@ -27,10 +27,30 @@
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
             padding: 40px 60px;
-            text-align: center;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 400px;
+            max-width: 800px;
             width: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 0 0 200px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding-right: 40px;
+        }
+
+        .main-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         h1 {
@@ -78,6 +98,12 @@
             box-shadow: 0 2px 10px rgba(0, 114, 255, 0.4);
         }
 
+        button.active {
+            transform: translateY(2px) !important;
+            box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+            background: linear-gradient(45deg, #005bb5, #0099cc) !important;
+        }
+
         /* Animation class for the number */
         .pop {
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -93,13 +119,6 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-
-        .buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
         }
 
         .custom-interval {
@@ -148,30 +167,61 @@
 <body>
 
     <div class="container">
-        <h1>Slumptalsgenerator</h1>
-        <div id="result">-</div>
-        <div class="buttons">
-            <button class="generateBtn" data-min="1" data-max="10">1-10</button>
-            <button class="generateBtn" data-min="1" data-max="100">1-100</button>
-            <button class="generateBtn" data-min="1" data-max="1000">1-1000</button>
+        <div class="sidebar">
+            <button class="modeBtn active" data-mode="all">Alla tal</button>
+            <button class="modeBtn" data-mode="even">Jämna tal</button>
+            <button class="modeBtn" data-mode="odd">Udda tal</button>
         </div>
+        <div class="main-panel">
+            <h1>Slumptalsgenerator</h1>
+            <div id="result">-</div>
 
-        <div class="custom-interval">
-            <div class="inputs">
-                <input type="number" id="customMin" placeholder="Min">
-                <span>-</span>
-                <input type="number" id="customMax" placeholder="Max">
+            <div class="custom-interval">
+                <div class="inputs">
+                    <input type="number" id="customMin" placeholder="Min">
+                    <span>-</span>
+                    <input type="number" id="customMax" placeholder="Max">
+                </div>
+                <button id="customGenerateBtn">Slumpa inom intervall</button>
             </div>
-            <button id="customGenerateBtn">Slumpa inom intervall</button>
         </div>
     </div>
 
     <script>
         const resultDiv = document.getElementById('result');
-        const generateBtns = document.querySelectorAll('.generateBtn');
+        const modeBtns = document.querySelectorAll('.modeBtn');
+        const customGenerateBtn = document.getElementById('customGenerateBtn');
+        const customMinInput = document.getElementById('customMin');
+        const customMaxInput = document.getElementById('customMax');
+
+        let currentMode = 'all';
 
         function generateAndShow(min, max) {
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            let realMin = min;
+            let realMax = max;
+
+            if (currentMode === 'even') {
+                if (realMin % 2 !== 0) realMin++;
+                if (realMax % 2 !== 0) realMax--;
+            } else if (currentMode === 'odd') {
+                if (realMin % 2 === 0) realMin++;
+                if (realMax % 2 === 0) realMax--;
+            }
+
+            if (realMin > realMax) {
+                resultDiv.textContent = "-";
+                return;
+            }
+
+            let randomNumber;
+            if (currentMode === 'all') {
+                randomNumber = Math.floor(Math.random() * (realMax - realMin + 1)) + realMin;
+            } else {
+                const steps = Math.floor((realMax - realMin) / 2);
+                const randomStep = Math.floor(Math.random() * (steps + 1));
+                randomNumber = realMin + (randomStep * 2);
+            }
+
             resultDiv.classList.remove('pop');
             setTimeout(() => {
                 resultDiv.textContent = randomNumber;
@@ -179,24 +229,27 @@
             }, 10);
         }
 
-        generateBtns.forEach(btn => {
+        modeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                const min = parseInt(btn.getAttribute('data-min'), 10);
-                const max = parseInt(btn.getAttribute('data-max'), 10);
-                generateAndShow(min, max);
+                // Typa om classList för att markera den som nedtryckt
+                modeBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Sätt läge
+                currentMode = btn.getAttribute('data-mode');
+                
+                // Generera direkt
+                customGenerateBtn.click();
             });
         });
-
-        const customGenerateBtn = document.getElementById('customGenerateBtn');
-        const customMinInput = document.getElementById('customMin');
-        const customMaxInput = document.getElementById('customMax');
 
         customGenerateBtn.addEventListener('click', () => {
             const minVal = parseInt(customMinInput.value, 10);
             const maxVal = parseInt(customMaxInput.value, 10);
             
+            // Standard om rutorna är tomma (0 och 100 som exempel)
             const min = isNaN(minVal) ? 0 : minVal;
-            const max = isNaN(maxVal) ? 0 : maxVal;
+            const max = isNaN(maxVal) ? 100 : maxVal;
 
             const realMin = Math.min(min, max);
             const realMax = Math.max(min, max);
