@@ -228,7 +228,7 @@
             <button id="dateBtn">Datum</button>
             <button id="kingBtn" style="font-size: 15px; padding: 10px 5px; white-space: nowrap;">Svenska regenter</button>
             <button id="waterfallBtn">Vattenfall</button>
-            <button style="opacity: 0.7;">Knapp 7</button>
+            <button id="elementBtn">Grundämne</button>
         </div>
 
         <!-- Räknare -->
@@ -469,6 +469,50 @@
             setTimeout(() => {
                 resultDiv.style.fontSize = "38px"; 
                 resultDiv.textContent = randomWaterfall;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
+        });
+
+        const elements = [
+            "Väte", "Helium", "Litium", "Beryllium", "Bor", "Kol", "Kväve", "Syre", "Fluor", "Neon", 
+            "Natrium", "Magnesium", "Aluminium", "Kisel", "Fosfor", "Svavel", "Klor", "Argon", "Kalium", "Kalcium", 
+            "Skandium", "Titan", "Vanadin", "Krom", "Mangan", "Järn", "Kobolt", "Nickel", "Koppar", "Zink", 
+            "Gallium", "Germanium", "Arsenik", "Selen", "Brom", "Krypton", "Rubidium", "Strontium", "Yttrium", "Zirkonium", 
+            "Niob", "Molybden", "Teknetium", "Rutenium", "Rodium", "Palladium", "Silver", "Kadmium", "Indium", "Tenn", 
+            "Antimon", "Tellur", "Jod", "Xenon", "Cesium", "Barium", "Lantan", "Cerium", "Praseodym", "Neodym", 
+            "Prometium", "Samarium", "Europium", "Gadolinium", "Terbium", "Dysprosium", "Holmium", "Erbium", "Tulium", "Ytterbium", 
+            "Lutetium", "Hafnium", "Tantal", "Volfram", "Renium", "Osmium", "Iridium", "Platina", "Guld", "Kvicksilver", 
+            "Tallium", "Bly", "Vismut", "Polonium", "Astat", "Radon", "Francium", "Radium", "Aktinium", "Torium", 
+            "Protaktinium", "Uran", "Neptunium", "Plutonium", "Americium", "Curium", "Berkelium", "Californium", "Einsteinium", "Fermium", 
+            "Mendelevium", "Nobelium", "Lawrencium", "Rutherfordium", "Dubnium", "Seaborgium", "Bohrium", "Hassium", "Meitnerium", "Darmstadtium", 
+            "Röntgenium", "Copernicium", "Nihonium", "Flerovium", "Moskovium", "Livermorium", "Tenness", "Oganesson"
+        ];
+
+        const elementBtn = document.getElementById('elementBtn');
+        elementBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            elementBtn.classList.add('active');
+            setTimeout(() => elementBtn.classList.remove('active'), 150);
+
+            const randomElement = elements[Math.floor(Math.random() * elements.length)];
+
+            // Visa resultatet snyggt med mindre text
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.style.fontSize = "38px"; 
+                resultDiv.textContent = randomElement;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren
