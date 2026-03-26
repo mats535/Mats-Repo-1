@@ -202,6 +202,7 @@
             <button class="modeBtn active" data-mode="all">Alla tal</button>
             <button class="modeBtn" data-mode="even">Jämna tal</button>
             <button class="modeBtn" data-mode="odd">Udda tal</button>
+            <button class="modeBtn" data-mode="prime">Primtal</button>
         </div>
 
         <!-- Mitten kolumn (Resultat & Manuellt intervall) -->
@@ -244,6 +245,16 @@
 
         let currentMode = 'all';
 
+        function isPrime(num) {
+            if (num <= 1) return false;
+            if (num === 2 || num === 3) return true;
+            if (num % 2 === 0 || num % 3 === 0) return false;
+            for (let i = 5; i * i <= num; i += 6) {
+                if (num % i === 0 || num % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
         let globalCount = 0;
 
         function updateCounterUI(val) {
@@ -281,7 +292,17 @@
             }
 
             let randomNumber;
-            if (currentMode === 'all') {
+            if (currentMode === 'prime') {
+                const validPrimes = [];
+                for (let i = realMin; i <= realMax; i++) {
+                    if (isPrime(i)) validPrimes.push(i);
+                }
+                if (validPrimes.length === 0) {
+                    resultDiv.textContent = "-";
+                    return;
+                }
+                randomNumber = validPrimes[Math.floor(Math.random() * validPrimes.length)];
+            } else if (currentMode === 'all') {
                 randomNumber = Math.floor(Math.random() * (realMax - realMin + 1)) + realMin;
             } else {
                 const steps = Math.floor((realMax - realMin) / 2);
