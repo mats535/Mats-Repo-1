@@ -245,7 +245,7 @@
         let currentMode = 'all';
 
         // Låtsas-global räknare med LocalStorage för att spara värdet lokalt
-        let globalCount = localStorage.getItem('globalRandomCount');
+        let globalCount = localStorage.getItem('globalRandomCountV2');
         if (!globalCount) {
             globalCount = 0; // Starta på noll
         } else {
@@ -291,7 +291,7 @@
 
                 // Öka "globala" räknaren
                 globalCount++;
-                localStorage.setItem('globalRandomCount', globalCount);
+                localStorage.setItem('globalRandomCountV2', globalCount);
                 updateCounterUI();
             }, 10);
         }
