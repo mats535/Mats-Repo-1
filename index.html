@@ -226,6 +226,7 @@
             <button class="presetBtn" data-min="1" data-max="100">1-100</button>
             <button class="presetBtn" data-min="1" data-max="1000">1-1000</button>
             <button id="dateBtn">Datum</button>
+            <button id="kingBtn">Kung</button>
         </div>
 
         <!-- Räknare -->
@@ -313,6 +314,7 @@
 
             resultDiv.classList.remove('pop');
             setTimeout(() => {
+                resultDiv.style.fontSize = ""; // Återställ till standardstorleken
                 resultDiv.textContent = randomNumber;
                 resultDiv.classList.add('pop');
 
@@ -378,10 +380,51 @@
             // Visa resultatet snyggt
             resultDiv.classList.remove('pop');
             setTimeout(() => {
+                resultDiv.style.fontSize = ""; // Återställ till standardstorleken
                 resultDiv.textContent = randomDate;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren även vid datum
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
+        });
+
+        const kings = [
+            "Olof Skötkonung", "Anund Jakob", "Emund den gamle", "Stenkil", 
+            "Karl Sverkersson", "Magnus Ladulås", "Birger Jarl", "Magnus Eriksson",
+            "Albrekt av Mecklenburg", "Drottning Margareta", "Erik av Pommern", "Kristofer av Bayern",
+            "Karl Knutsson (Bonde)", "Sten Sture den äldre", "Gustav Vasa", "Erik XIV", 
+            "Johan III", "Sigismund", "Karl IX", "Gustav II Adolf", "Drottning Kristina", 
+            "Karl X Gustav", "Karl XI", "Karl XII", "Ulrika Eleonora", "Fredrik I", 
+            "Adolf Fredrik", "Gustav III", "Gustav IV Adolf", "Karl XIII", "Karl XIV Johan",
+            "Oscar I", "Karl XV", "Oscar II", "Gustav V", "Gustav VI Adolf", "Carl XVI Gustaf"
+        ];
+
+        const kingBtn = document.getElementById('kingBtn');
+        kingBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            kingBtn.classList.add('active');
+            setTimeout(() => kingBtn.classList.remove('active'), 150);
+
+            const randomKing = kings[Math.floor(Math.random() * kings.length)];
+
+            // Visa resultatet snyggt med mindre text
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.style.fontSize = "38px"; // Mycket mindre text för att namnen ska få plats
+                resultDiv.textContent = randomKing;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren även vid kung
                 fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
                     .then(res => res.json())
                     .then(data => {
