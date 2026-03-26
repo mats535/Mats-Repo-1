@@ -28,7 +28,7 @@
             border-radius: 20px;
             padding: 40px 60px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
             display: flex;
             flex-direction: row;
@@ -43,6 +43,15 @@
             flex: 0 0 200px;
             border-right: 1px solid rgba(255, 255, 255, 0.2);
             padding-right: 40px;
+        }
+
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 0 0 200px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            padding-left: 40px;
         }
 
         .main-panel {
@@ -130,6 +139,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            width: 100%;
         }
 
         .inputs {
@@ -167,11 +177,14 @@
 <body>
 
     <div class="container">
+        <!-- Vänster kolumn (Lägen) -->
         <div class="sidebar">
             <button class="modeBtn active" data-mode="all">Alla tal</button>
             <button class="modeBtn" data-mode="even">Jämna tal</button>
             <button class="modeBtn" data-mode="odd">Udda tal</button>
         </div>
+
+        <!-- Mitten kolumn (Resultat & Manuellt intervall) -->
         <div class="main-panel">
             <h1>Slumptalsgenerator</h1>
             <div id="result">-</div>
@@ -185,11 +198,19 @@
                 <button id="customGenerateBtn">Slumpa inom intervall</button>
             </div>
         </div>
+
+        <!-- Höger kolumn (Snabbval) -->
+        <div class="sidebar-right">
+            <button class="presetBtn" data-min="1" data-max="10">1-10</button>
+            <button class="presetBtn" data-min="1" data-max="100">1-100</button>
+            <button class="presetBtn" data-min="1" data-max="1000">1-1000</button>
+        </div>
     </div>
 
     <script>
         const resultDiv = document.getElementById('result');
         const modeBtns = document.querySelectorAll('.modeBtn');
+        const presetBtns = document.querySelectorAll('.presetBtn');
         const customGenerateBtn = document.getElementById('customGenerateBtn');
         const customMinInput = document.getElementById('customMin');
         const customMaxInput = document.getElementById('customMax');
@@ -231,14 +252,24 @@
 
         modeBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Typa om classList för att markera den som nedtryckt
                 modeBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
-                // Sätt läge
                 currentMode = btn.getAttribute('data-mode');
+                customGenerateBtn.click();
+            });
+        });
+
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Auto-ifyll värden i input-fälten
+                customMinInput.value = btn.getAttribute('data-min');
+                customMaxInput.value = btn.getAttribute('data-max');
                 
-                // Generera direkt
+                // Animering
+                btn.classList.add('active');
+                setTimeout(() => btn.classList.remove('active'), 150);
+
+                // Slumpa direkt
                 customGenerateBtn.click();
             });
         });
@@ -247,7 +278,7 @@
             const minVal = parseInt(customMinInput.value, 10);
             const maxVal = parseInt(customMaxInput.value, 10);
             
-            // Standard om rutorna är tomma (0 och 100 som exempel)
+            // Standard om rutorna är tomma
             const min = isNaN(minVal) ? 0 : minVal;
             const max = isNaN(maxVal) ? 100 : maxVal;
 
