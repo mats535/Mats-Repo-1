@@ -26,7 +26,7 @@
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            padding: 40px 60px;
+            padding: 40px 60px 60px 60px;
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             max-width: 1000px;
             width: 100%;
@@ -34,6 +34,7 @@
             flex-direction: row;
             gap: 40px;
             align-items: center;
+            position: relative;
         }
 
         .sidebar {
@@ -171,6 +172,25 @@
         #customGenerateBtn {
             width: 100%;
         }
+
+        /* Global Counter Setup */
+        .global-counter {
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+            text-align: right;
+        }
+
+        .global-counter strong {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 18px;
+            display: block;
+            margin-top: 4px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
     </style>
 </head>
 
@@ -205,6 +225,12 @@
             <button class="presetBtn" data-min="1" data-max="100">1-100</button>
             <button class="presetBtn" data-min="1" data-max="1000">1-1000</button>
         </div>
+
+        <!-- Räknare -->
+        <div class="global-counter">
+            TOTALT SLUMPADE TAL I VÄRLDEN
+            <strong id="counterVal">0</strong>
+        </div>
     </div>
 
     <script>
@@ -214,8 +240,23 @@
         const customGenerateBtn = document.getElementById('customGenerateBtn');
         const customMinInput = document.getElementById('customMin');
         const customMaxInput = document.getElementById('customMax');
+        const counterVal = document.getElementById('counterVal');
 
         let currentMode = 'all';
+
+        // Låtsas-global räknare med LocalStorage för att spara värdet lokalt
+        let globalCount = localStorage.getItem('globalRandomCount');
+        if (!globalCount) {
+            globalCount = 104258; // Ett trovärdigt startvärde om man är ny på sidan
+        } else {
+            globalCount = parseInt(globalCount, 10);
+        }
+
+        function updateCounterUI() {
+            // Formaterar med mellanslag e.g. 1 040 258
+            counterVal.textContent = new Intl.NumberFormat('sv-SE').format(globalCount);
+        }
+        updateCounterUI();
 
         function generateAndShow(min, max) {
             let realMin = min;
@@ -247,6 +288,11 @@
             setTimeout(() => {
                 resultDiv.textContent = randomNumber;
                 resultDiv.classList.add('pop');
+
+                // Öka "globala" räknaren
+                globalCount++;
+                localStorage.setItem('globalRandomCount', globalCount);
+                updateCounterUI();
             }, 10);
         }
 
@@ -261,15 +307,12 @@
 
         presetBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                // Auto-ifyll värden i input-fälten
                 customMinInput.value = btn.getAttribute('data-min');
                 customMaxInput.value = btn.getAttribute('data-max');
                 
-                // Animering
                 btn.classList.add('active');
                 setTimeout(() => btn.classList.remove('active'), 150);
 
-                // Slumpa direkt
                 customGenerateBtn.click();
             });
         });
@@ -278,7 +321,6 @@
             const minVal = parseInt(customMinInput.value, 10);
             const maxVal = parseInt(customMaxInput.value, 10);
             
-            // Standard om rutorna är tomma
             const min = isNaN(minVal) ? 0 : minVal;
             const max = isNaN(maxVal) ? 100 : maxVal;
 
