@@ -94,6 +94,13 @@
                 opacity: 1;
             }
         }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 
@@ -102,27 +109,32 @@
     <div class="container">
         <h1>Slumptalsgenerator</h1>
         <div id="result">-</div>
-        <button id="generateBtn">Slumpa fram ett nytt tal</button>
+        <div class="buttons">
+            <button class="generateBtn" data-min="1" data-max="10">1-10</button>
+            <button class="generateBtn" data-min="1" data-max="100">1-100</button>
+            <button class="generateBtn" data-min="1" data-max="1000">1-1000</button>
+        </div>
     </div>
 
     <script>
         const resultDiv = document.getElementById('result');
-        const generateBtn = document.getElementById('generateBtn');
+        const generateBtns = document.querySelectorAll('.generateBtn');
 
-        generateBtn.addEventListener('click', () => {
-            // Genererar ett tal mellan 0 och 1000
-            const min = 0;
-            const max = 1000;
-            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+        generateBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const min = parseInt(btn.getAttribute('data-min'), 10);
+                const max = parseInt(btn.getAttribute('data-max'), 10);
+                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
-            // Ta bort animationsklassen kort för att kunna trigga den igen
-            resultDiv.classList.remove('pop');
+                // Ta bort animationsklassen kort för att kunna trigga den igen
+                resultDiv.classList.remove('pop');
 
-            // Använd en liten timeout så att webbläsaren registrerar borttagandet innan den läggs till
-            setTimeout(() => {
-                resultDiv.textContent = randomNumber;
-                resultDiv.classList.add('pop');
-            }, 10);
+                // Använd en liten timeout så att webbläsaren registrerar borttagandet innan den läggs till
+                setTimeout(() => {
+                    resultDiv.textContent = randomNumber;
+                    resultDiv.classList.add('pop');
+                }, 10);
+            });
         });
     </script>
 
