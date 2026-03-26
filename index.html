@@ -101,6 +101,47 @@
             justify-content: center;
             flex-wrap: wrap;
         }
+
+        .custom-interval {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .inputs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 20px;
+        }
+
+        .inputs input {
+            width: 80px;
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            text-align: center;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            outline: none;
+            font-weight: 600;
+        }
+
+        .inputs input:focus {
+            box-shadow: 0 0 10px rgba(0, 114, 255, 0.4);
+        }
+
+        #customGenerateBtn {
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -114,27 +155,53 @@
             <button class="generateBtn" data-min="1" data-max="100">1-100</button>
             <button class="generateBtn" data-min="1" data-max="1000">1-1000</button>
         </div>
+
+        <div class="custom-interval">
+            <div class="inputs">
+                <input type="number" id="customMin" placeholder="Min" value="1">
+                <span>-</span>
+                <input type="number" id="customMax" placeholder="Max" value="100">
+            </div>
+            <button id="customGenerateBtn">Slumpa inom intervall</button>
+        </div>
     </div>
 
     <script>
         const resultDiv = document.getElementById('result');
         const generateBtns = document.querySelectorAll('.generateBtn');
 
+        function generateAndShow(min, max) {
+            const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.textContent = randomNumber;
+                resultDiv.classList.add('pop');
+            }, 10);
+        }
+
         generateBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const min = parseInt(btn.getAttribute('data-min'), 10);
                 const max = parseInt(btn.getAttribute('data-max'), 10);
-                const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
-
-                // Ta bort animationsklassen kort för att kunna trigga den igen
-                resultDiv.classList.remove('pop');
-
-                // Använd en liten timeout så att webbläsaren registrerar borttagandet innan den läggs till
-                setTimeout(() => {
-                    resultDiv.textContent = randomNumber;
-                    resultDiv.classList.add('pop');
-                }, 10);
+                generateAndShow(min, max);
             });
+        });
+
+        const customGenerateBtn = document.getElementById('customGenerateBtn');
+        const customMinInput = document.getElementById('customMin');
+        const customMaxInput = document.getElementById('customMax');
+
+        customGenerateBtn.addEventListener('click', () => {
+            const minVal = parseInt(customMinInput.value, 10);
+            const maxVal = parseInt(customMaxInput.value, 10);
+            
+            const min = isNaN(minVal) ? 0 : minVal;
+            const max = isNaN(maxVal) ? 0 : maxVal;
+
+            const realMin = Math.min(min, max);
+            const realMax = Math.max(min, max);
+
+            generateAndShow(realMin, realMax);
         });
     </script>
 
