@@ -225,6 +225,7 @@
             <button class="presetBtn" data-min="1" data-max="10">1-10</button>
             <button class="presetBtn" data-min="1" data-max="100">1-100</button>
             <button class="presetBtn" data-min="1" data-max="1000">1-1000</button>
+            <button id="dateBtn">Datum</button>
         </div>
 
         <!-- Räknare -->
@@ -349,6 +350,49 @@
 
                 customGenerateBtn.click();
             });
+        });
+
+        const dateBtn = document.getElementById('dateBtn');
+        dateBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            dateBtn.classList.add('active');
+            setTimeout(() => dateBtn.classList.remove('active'), 150);
+
+            // Generera slumpmässig månad
+            const month = Math.floor(Math.random() * 12) + 1;
+            
+            // Bestäm antal dagar i den valda månaden
+            let daysInMonth = 31;
+            if (month === 2) {
+                daysInMonth = 28; // Ignorerar skottår för enkelhetens skull
+            } else if ([4, 6, 9, 11].includes(month)) {
+                daysInMonth = 30;
+            }
+            
+            // Generera slumpmässig dag i månaden
+            const day = Math.floor(Math.random() * daysInMonth) + 1;
+            
+            // Formatera som dag/månad
+            const randomDate = day + '/' + month;
+
+            // Visa resultatet snyggt
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.textContent = randomDate;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren även vid datum
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
         });
 
         customGenerateBtn.addEventListener('click', () => {
