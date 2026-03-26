@@ -247,7 +247,7 @@
         // Låtsas-global räknare med LocalStorage för att spara värdet lokalt
         let globalCount = localStorage.getItem('globalRandomCount');
         if (!globalCount) {
-            globalCount = 104258; // Ett trovärdigt startvärde om man är ny på sidan
+            globalCount = 0; // Starta på noll
         } else {
             globalCount = parseInt(globalCount, 10);
         }
