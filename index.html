@@ -244,19 +244,24 @@
 
         let currentMode = 'all';
 
-        // Låtsas-global räknare med LocalStorage för att spara värdet lokalt
-        let globalCount = localStorage.getItem('globalRandomCountV2');
-        if (!globalCount) {
-            globalCount = 0; // Starta på noll
-        } else {
-            globalCount = parseInt(globalCount, 10);
+        let globalCount = 0;
+
+        function updateCounterUI(val) {
+            // Formaterar med mellanslag e.g. 1 040 258
+            counterVal.textContent = new Intl.NumberFormat('sv-SE').format(val);
         }
 
-        function updateCounterUI() {
-            // Formaterar med mellanslag e.g. 1 040 258
-            counterVal.textContent = new Intl.NumberFormat('sv-SE').format(globalCount);
-        }
-        updateCounterUI();
+        // Läs in det verkliga globala värdet från ett gratis öppet databas-API när sidan laddas
+        fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/')
+            .then(res => res.json())
+            .then(data => {
+                globalCount = data.count || 0;
+                updateCounterUI(globalCount);
+            })
+            .catch(err => {
+                console.log('Kunde inte läsa global räknare (eventuellt offline, eller så är detta det allra första besöket)');
+                updateCounterUI(globalCount);
+            });
 
         function generateAndShow(min, max) {
             let realMin = min;
@@ -289,10 +294,18 @@
                 resultDiv.textContent = randomNumber;
                 resultDiv.classList.add('pop');
 
-                // Öka "globala" räknaren
-                globalCount++;
-                localStorage.setItem('globalRandomCountV2', globalCount);
-                updateCounterUI();
+                // Uppdatera det riktiga globala API:et varje gång man klickar
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        // Fallback om API tillfälligt nere
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
             }, 10);
         }
 
