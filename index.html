@@ -227,7 +227,7 @@
         <div class="sidebar-right">
             <button id="dateBtn">Datum</button>
             <button id="kingBtn" style="font-size: 15px; padding: 10px 5px; white-space: nowrap;">Svenska regenter</button>
-            <button id="waterfallBtn">Vattenfall</button>
+            <button id="rockstarBtn">Rockstjärnor</button>
             <button id="elementBtn">Grundämne</button>
         </div>
 
@@ -448,27 +448,28 @@
             }, 10);
         });
 
-        const waterfalls = [
-            "Niagarafallen", "Victoriafallen", "Iguazúfallen", "Ängelfallet", 
-            "Yosemitefallen", "Gullfoss", "Tugela Falls", "Dettifoss", 
-            "Rhenfallet", "Kaieteurfallen", "Tännforsen", "Njupeskär",
-            "Stora Sjöfallet", "Havasu Falls", "Sutherland Falls", 
-            "Plitvicefallen", "Skógafoss", "Seljalandsfoss", "Ouzoudfallen"
+        const rockstars = [
+            "Freddie Mercury", "Mick Jagger", "David Bowie", "Kurt Cobain", "Jimi Hendrix", 
+            "Elvis Presley", "Janis Joplin", "Steven Tyler", "Bruce Springsteen", "Axl Rose", 
+            "Jon Bon Jovi", "Ozzy Osbourne", "Dave Grohl", "Joan Jett", "Lemmy Kilmister", 
+            "Robert Plant", "Iggy Pop", "Patti Smith", "Stevie Nicks", "Paul McCartney",
+            "John Lennon", "Angus Young", "Alice Cooper", "Bono", "Sting", "Thåström", 
+            "Joey Tempest", "Joakim Brodén", "Rob Halford", "Bruce Dickinson", "Ronnie James Dio"
         ];
 
-        const waterfallBtn = document.getElementById('waterfallBtn');
-        waterfallBtn.addEventListener('click', () => {
+        const rockstarBtn = document.getElementById('rockstarBtn');
+        rockstarBtn.addEventListener('click', () => {
             // Animerad knapptryckning
-            waterfallBtn.classList.add('active');
-            setTimeout(() => waterfallBtn.classList.remove('active'), 150);
+            rockstarBtn.classList.add('active');
+            setTimeout(() => rockstarBtn.classList.remove('active'), 150);
 
-            const randomWaterfall = waterfalls[Math.floor(Math.random() * waterfalls.length)];
+            const randomRockstar = rockstars[Math.floor(Math.random() * rockstars.length)];
 
             // Visa resultatet snyggt med mindre text
             resultDiv.classList.remove('pop');
             setTimeout(() => {
                 resultDiv.style.fontSize = "38px"; 
-                resultDiv.textContent = randomWaterfall;
+                resultDiv.textContent = randomRockstar;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren
