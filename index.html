@@ -228,7 +228,8 @@
             <button id="dateBtn">Datum</button>
             <button id="kingBtn" style="font-size: 15px; padding: 10px 5px; white-space: nowrap;">Svenska regenter</button>
             <button id="rockstarBtn">Rockstjärnor</button>
-            <button id="elementBtn">Grundämne</button>
+            <button id="elementBtn">Grundämnen</button>
+            <button id="superheroBtn">Superhjältar</button>
         </div>
 
         <!-- Räknare -->
@@ -514,6 +515,44 @@
             setTimeout(() => {
                 resultDiv.style.fontSize = "38px"; 
                 resultDiv.textContent = randomElement;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
+        });
+
+        const superheroes = [
+            "Stålmannen", "Batman", "Spider-Man", "Wonder Woman", "Iron Man", 
+            "Captain America", "Thor", "Hulken", "Blixten", "Aquaman", 
+            "Black Panther", "Doctor Strange", "Wolverine", "Deadpool", 
+            "Green Lantern", "Black Widow", "Daredevil", "Fantomen", 
+            "Captain Marvel", "Ant-Man", "Goku", "Sailor Moon", "Saitama",
+            "Spawn", "Hellboy", "Invincible", "Shazam", "Nightwing", "Cyborg"
+        ];
+
+        const superheroBtn = document.getElementById('superheroBtn');
+        superheroBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            superheroBtn.classList.add('active');
+            setTimeout(() => superheroBtn.classList.remove('active'), 150);
+
+            const randomSuperhero = superheroes[Math.floor(Math.random() * superheroes.length)];
+
+            // Visa resultatet snyggt med mindre text
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.style.fontSize = "38px"; 
+                resultDiv.textContent = randomSuperhero;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren
