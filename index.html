@@ -230,6 +230,7 @@
             <button id="rockstarBtn">Rockstjärnor</button>
             <button id="elementBtn">Grundämnen</button>
             <button id="superheroBtn">Superhjältar</button>
+            <button id="schlagerBtn" style="font-size: 14px; padding: 10px 5px; white-space: nowrap;">Schlagersångare</button>
         </div>
 
         <!-- Räknare -->
@@ -553,6 +554,46 @@
             setTimeout(() => {
                 resultDiv.style.fontSize = "38px"; 
                 resultDiv.textContent = randomSuperhero;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
+        });
+
+        const schlagerSingers = [
+            "Carola Häggkvist", "Charlotte Perrelli", "Lena Philipsson", "Pernilla Wahlgren", 
+            "Lasse Berghagen", "Måns Zelmerlöw", "Loreen", "Kikki Danielsson", "Tommy Körberg", 
+            "Sanna Nielsen", "Christer Björkman", "Nanne Grönvall", "Andreas Lundstedt", 
+            "Magnus Carlsson", "Jessica Andersson", "Shirley Clamp", "Jan Johansen", 
+            "Tomas Ledin", "Robin Stjernberg", "Eric Saade", "Roger Pontare", "Anna Bergendahl", 
+            "Benjamin Ingrosso", "Cornelia Jakobs", "Tusse", "John Lundvik", "Frans", 
+            "Danny Saucedo", "Lotta Engberg", "Jill Johnson", "Afrodite", "Sarah Dawn Finer", 
+            "Linda Bengtzing", "Babsan", "Samir & Viktor", "Martin Stenmarck"
+        ];
+
+        const schlagerBtn = document.getElementById('schlagerBtn');
+        schlagerBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            schlagerBtn.classList.add('active');
+            setTimeout(() => schlagerBtn.classList.remove('active'), 150);
+
+            const randomSinger = schlagerSingers[Math.floor(Math.random() * schlagerSingers.length)];
+
+            // Visa resultatet snyggt med mindre text
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.style.fontSize = "38px"; 
+                resultDiv.textContent = randomSinger;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren
