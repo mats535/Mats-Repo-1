@@ -231,6 +231,7 @@
             <button id="elementBtn">Grundämnen</button>
             <button id="superheroBtn">Superhjältar</button>
             <button id="schlagerBtn" style="font-size: 14px; padding: 10px 5px; white-space: nowrap;">Schlagersångare</button>
+            <button id="politicianBtn" style="font-size: 15px; padding: 10px 5px; white-space: nowrap;">Partiledare</button>
         </div>
 
         <!-- Räknare -->
@@ -594,6 +595,46 @@
             setTimeout(() => {
                 resultDiv.style.fontSize = "38px"; 
                 resultDiv.textContent = randomSinger;
+                resultDiv.classList.add('pop');
+
+                // Uppdatera den globala räknaren
+                fetch('https://api.counterapi.dev/v1/mats_slumpgen_global_v1/clicks/up')
+                    .then(res => res.json())
+                    .then(data => {
+                        globalCount = data.count;
+                        updateCounterUI(globalCount);
+                    })
+                    .catch(e => {
+                        globalCount++;
+                        updateCounterUI(globalCount);
+                    });
+            }, 10);
+        });
+
+        const partyLeaders = [
+            "Olof Palme", "Ingvar Carlsson", "Göran Persson", "Mona Sahlin", "Håkan Juholt", "Stefan Löfven", "Magdalena Andersson",
+            "Gösta Bohman", "Ulf Adelsohn", "Carl Bildt", "Bo Lundgren", "Fredrik Reinfeldt", "Anna Kinberg Batra", "Ulf Kristersson",
+            "Thorbjörn Fälldin", "Karin Söder", "Olof Johansson", "Lennart Daléus", "Maud Olofsson", "Annie Lööf", "Muharrem Demirok",
+            "Gunnar Helén", "Per Ahlmark", "Ola Ullsten", "Bengt Westerberg", "Maria Leissner", "Lars Leijonborg", "Jan Björklund", "Nyamko Sabuni", "Johan Pehrson",
+            "Alf Svensson", "Göran Hägglund", "Ebba Busch",
+            "C.-H. Hermansson", "Lars Werner", "Gudrun Schyman", "Ulla Hoffmann", "Lars Ohly", "Jonas Sjöstedt", "Nooshi Dadgostar",
+            "Birger Schlaug", "Peter Eriksson", "Maria Wetterstrand", "Gustav Fridolin", "Åsa Romson", "Isabella Lövin", "Per Bolund", "Märta Stenevi", "Daniel Helldén", "Amanda Lind",
+            "Mikael Jansson", "Jimmie Åkesson", "Ian Wachtmeister"
+        ];
+
+        const politicianBtn = document.getElementById('politicianBtn');
+        politicianBtn.addEventListener('click', () => {
+            // Animerad knapptryckning
+            politicianBtn.classList.add('active');
+            setTimeout(() => politicianBtn.classList.remove('active'), 150);
+
+            const randomLeader = partyLeaders[Math.floor(Math.random() * partyLeaders.length)];
+
+            // Visa resultatet snyggt med mindre text
+            resultDiv.classList.remove('pop');
+            setTimeout(() => {
+                resultDiv.style.fontSize = "38px"; 
+                resultDiv.textContent = randomLeader;
                 resultDiv.classList.add('pop');
 
                 // Uppdatera den globala räknaren
